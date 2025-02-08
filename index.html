@@ -35,8 +35,8 @@
         .options li {
             margin: 10px 0;
         }
-        button {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        .options button {
+            background: linear-gradient(45deg, #1e90ff, #0073e6);
             border: none;
             padding: 10px 20px;
             font-size: 1em;
@@ -45,8 +45,29 @@
             cursor: pointer;
             transition: 0.3s;
         }
-        button:hover {
-            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        .options button:hover {
+            background: linear-gradient(45deg, #0073e6, #1e90ff);
+        }
+        button {
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .next-btn {
+            background: linear-gradient(45deg, #00c3ff, #0082c8);
+        }
+        .restart-btn {
+            background: linear-gradient(45deg, #ff8c00, #ff4500);
+        }
+        .next-btn:hover {
+            background: linear-gradient(45deg, #0082c8, #00c3ff);
+        }
+        .restart-btn:hover {
+            background: linear-gradient(45deg, #ff4500, #ff8c00);
         }
         .result {
             font-weight: bold;
@@ -65,7 +86,17 @@
         #timer {
             font-size: 1.2em;
             margin: 10px 0;
-            color: #ff416c;
+            color: yellow;
+            font-weight: bold;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .explanation {
+            font-size: 0.9em;
+            color: #ccc;
         }
     </style>
 </head>
@@ -75,15 +106,18 @@
         <p id="timer">Czas: 05:00</p>
         <p id="question-counter"></p>
         <div id="quiz"></div>
-        <button onclick="nextQuestion()">Dalej</button>
-        <button onclick="restartQuiz()">Restartuj</button>
+        <div class="btn-container">
+            <button class="next-btn" onclick="nextQuestion()">Dalej</button>
+            <button class="restart-btn" onclick="restartQuiz()">Restartuj</button>
+        </div>
         <p id="score" class="result"></p>
         <div id="incorrect-answers" class="hidden">
             <h3>Błędne odpowiedzi:</h3>
             <ul id="incorrect-list"></ul>
         </div>
     </div>
-
+</body>
+</html>
     <script>
         const explanations = [
     "Paradygmat SDW koncentruje się na liczbie firm, barierach wejścia i zróżnicowaniu produktów, ale nie uwzględnia poziomu inwestycji w badania i rozwój jako podstawowego elementu struktury rynku.",
