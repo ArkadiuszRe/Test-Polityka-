@@ -158,7 +158,7 @@
         let currentQuestion = 0;
         let score = 0;
         let incorrectAnswers = [];
-        let timeLeft = 300; // 5 minut w sekundach
+        let timeLeft = 600; // 5 minut w sekundach
         let timerId = null;
 
         function startTimer() {
@@ -195,7 +195,12 @@
             displayIncorrectAnswers();
             document.querySelectorAll('.options button').forEach(button => button.disabled = true);
         }
-
+        function initializeQuestions() {
+            questions = allQuestions
+                .map((q, index) => ({ ...q, originalIndex: index }))
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 20);
+               }
         function loadQuestion() {
             if (currentQuestion >= questions.length) {
                 clearInterval(timerId);
@@ -228,29 +233,37 @@
             quizDiv.appendChild(ul);
         }
 
-        function checkAnswer(selected) {
-            const correctIndex = questions[currentQuestion].answer;
-            if (selected === correctIndex) {
+     function checkAnswer(selected) {
+            const q = questions[currentQuestion];
+            if (selected === q.answer) {
                 score++;
             } else {
                 incorrectAnswers.push({
-                    question: questions[currentQuestion].question,
-                    selected: questions[currentQuestion].options[selected],
-                    correct: questions[currentQuestion].options[correctIndex]
+                    question: q.question,
+                    selected: q.options[selected],
+                    correct: q.options[q.answer],
+                    originalIndex: q.originalIndex
                 });
             }
             currentQuestion++;
             loadQuestion();
         }
 
-        function displayIncorrectAnswers() {
+ function displayIncorrectAnswers() {
             if (incorrectAnswers.length > 0) {
                 document.getElementById("incorrect-answers").classList.remove("hidden");
                 const incorrectList = document.getElementById("incorrect-list");
                 incorrectList.innerHTML = "";
-                incorrectAnswers.forEach(item => {
+                
+                incorrectAnswers.forEach((item, index) => {
                     const li = document.createElement("li");
-                    li.innerHTML = `<strong>${item.question}</strong><br>Twoja odpowiedź: <span class="wrong-answer">${item.selected}</span><br>Poprawna odpowiedź: <span class="correct-answer">${item.correct}</span>`;
+                    li.innerHTML = `
+                        <strong>Pytanie ${index + 1}:</strong><br>
+                        ${item.question}<br>
+                        Twoja odpowiedź: <span class="wrong-answer">${item.selected}</span><br>
+                        Poprawna odpowiedź: <span class="correct-answer">${item.correct}</span><br>
+                        <span class="explanation">${explanations[item.originalIndex]}</span>
+                    `;
                     incorrectList.appendChild(li);
                 });
             }
@@ -264,7 +277,7 @@
             currentQuestion = 0;
             score = 0;
             incorrectAnswers = [];
-            document.getElementById("score").innerText = "";
+            initializeQuestions();
             document.getElementById("incorrect-answers").classList.add("hidden");
             questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
             document.querySelectorAll('.options button').forEach(button => button.disabled = false);
@@ -272,9 +285,10 @@
             loadQuestion();
         }
 
-        window.onload = function() {
-            loadQuestion();
+       window.onload = function() {
+            initializeQuestions();
             startTimer();
+            loadQuestion();
         };
     </script>
 </body>
