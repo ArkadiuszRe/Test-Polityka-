@@ -1,146 +1,214 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Ekonomia</title>
-<style>
-body {
-font-family: 'Arial', sans-serif;
-text-align: center;
-background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
-color: white;
-min-height: 100vh;
-display: flex;
-justify-content: center;
-align-items: center;
-}
-.quiz-container {
-max-width: 600px;
-padding: 20px;
-background: rgba(255, 255, 255, 0.1);
-border-radius: 15px;
-box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
-backdrop-filter: blur(10px);
-}
-.question {
-font-weight: bold;
-margin-bottom: 15px;
-font-size: 1.2em;
-}
-.options {
-list-style-type: none;
-padding: 0;
-}
-.options li {
-margin: 10px 0;
-}
-button {
-background: linear-gradient(45deg, #ff416c, #ff4b2b);
-border: none;
-padding: 10px 20px;
-font-size: 1em;
-color: white;
-border-radius: 5px;
-cursor: pointer;
-transition: 0.3s;
-}
-button:hover {
-background: linear-gradient(45deg, #ff4b2b, #ff416c);
-}
-.result {
-font-weight: bold;
-margin-top: 20px;
-font-size: 1.2em;
-}
-.wrong-answer {
-color: #ff4b2b;
-}
-.correct-answer {
-color: #42f57b;
-}
-.hidden {
-display: none;
-}
-#timer {
-font-size: 1.2em;
-margin: 10px 0;
-color: #ff416c;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Ekonomia</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .quiz-container {
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 10px 0;
+        }
+        button {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .wrong-answer {
+            color: #ff4b2b;
+        }
+        .correct-answer {
+            color: #42f57b;
+        }
+        .hidden {
+            display: none;
+        }
+        #timer {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #ff416c;
+        }
+    </style>
 </head>
 <body>
-<div class="quiz-container">
-<h2>Quiz z Ekonomii</h2>
-<p id="timer">Czas: 05:00</p>
-<p id="question-counter"></p>
-<div id="quiz"></div>
-<button onclick="nextQuestion()">Dalej</button>
-<button onclick="restartQuiz()">Restartuj</button>
-<p id="score" class="result"></p>
-<div id="incorrect-answers" class="hidden">
-<h3>Błędne odpowiedzi:</h3>
-<ul id="incorrect-list"></ul>
-</div>
-</div>
+    <div class="quiz-container">
+        <h2>Quiz z Ekonomii</h2>
+        <p id="timer">Czas: 05:00</p>
+        <p id="question-counter"></p>
+        <div id="quiz"></div>
+        <button onclick="nextQuestion()">Dalej</button>
+        <button onclick="restartQuiz()">Restartuj</button>
+        <p id="score" class="result"></p>
+        <div id="incorrect-answers" class="hidden">
+            <h3>Błędne odpowiedzi:</h3>
+            <ul id="incorrect-list"></ul>
+        </div>
+    </div>
 
-<script>
-const allQuestions = [
-{ question: "Który z poniższych elementów nie jest częścią struktury rynku według paradygmatu SDW?", options: ["Liczba firm w branży", "Zróżnicowanie produktu", "Poziom inwestycji w badania i rozwój", "Bariery wejścia"], answer: 2 },
-{ question: "Który ze wskaźników najlepiej mierzy koncentrację rynku?", options: ["Indeks Herfindahla-Hirschmana (HHI)", "Wskaźnik wzrostu PKB", "Indeks cen konsumpcyjnych", "Współczynnik Giniego"], answer: 0 },
-{ question: "Jeżeli HHI wynosi 10 000, to oznacza, że rynek jest:", options: ["Oligopolistyczny", "Konkurencyjny", "Zdominowany przez monopol", "Regulowany"], answer: 2 },
-{ question: "Który z rynków będzie miał najniższą marżę zysku?", options: ["Pełny monopol", "Oligopol", "Konkurencja monopolistyczna", "Konkurencja doskonała"], answer: 3 },
-{ question: "Główną różnicą między konkurencją doskonałą a konkurencją monopolistyczną jest:", options: ["Ilość firm na rynku", "Możliwość różnicowania produktu", "Sposób ustalania cen", "Poziom barier wejścia"], answer: 1 },
-{ question: "Zmowa milcząca różni się od zmowy jawnej tym, że:", options: ["Jest legalna", "Nie wymaga bezpośredniej komunikacji między firmami", "Dotyczy wyłącznie rynków finansowych", "Wymaga interwencji regulatora"], answer: 1 },
-{ question: "Który z czynników nie sprzyja powstawaniu zmowy?", options: ["Wysokie bariery wejścia", "Duża liczba firm na rynku", "Możliwość monitorowania cen konkurentów", "Wysoka przejrzystość rynku"], answer: 1 },
-{ question: "Który ze wskaźników może sugerować istnienie zmowy cenowej?", options: ["Wzrost liczby nowych przedsiębiorstw na rynku", "Stabilne i niemal identyczne ceny u wszystkich dostawców", "Wzrost wydatków na reklamę", "Spadek marż zysku w branży"], answer: 1 },
-{ question: "Która z branż jest najbardziej podatna na zmowy cenowe?", options: ["Przemysł spożywczy", "Telekomunikacja", "Rynek odzieżowy", "Transport lotniczy"], answer: 1 },
-{ question: "Program łagodzenia kar (leniency) polega na:", options: ["Obniżeniu grzywny dla firm zgłaszających zmowę", "Automatycznym anulowaniu wszystkich kar", "Podwyższaniu kar dla liderów karteli", "Umożliwieniu firmom negocjowania cen w ramach porozumienia"], answer: 0 },
-{ question: "Branże sieciowe charakteryzują się:", options: ["Silnymi korzyściami skali i zakresu", "Umiarkowaną kapitałochłonnością", "Niskim udziałem kosztów utraconych (sunk costs)", "Krótkim okresem zwrotu inwestycji"], answer: 0 },
-{ question: "Główną rolą regulatora w sektorach sieciowych jest:", options: ["Ochrona interesów firm", "Eliminacja wszystkich podmiotów prywatnych", "Zapewnienie konkurencji i stabilności rynku", "Maksymalizacja zysków rządu"], answer: 2 },
-{ question: "Który z poniższych elementów nie jest cechą naturalnego monopolu?", options: ["Wysokie koszty stałe", "Korzyści skali", "Duża liczba małych firm na rynku", "Niska efektywność kosztowa konkurencji"], answer: 2 },
-{ question: "Jednym z powodów regulacji sektora energetycznego jest:", options: ["Zbyt wysoka konkurencja", "Wysokie koszty wejścia na rynek", "Brak efektów sieciowych", "Niska kapitałochłonność"], answer: 1 },
-{ question: "Zawłaszczenie regulatora (regulatory capture) oznacza, że:", options: ["Regulator działa w interesie sektora, który powinien nadzorować", "Rząd bezpośrednio kontroluje wszystkie firmy", "Regulator wprowadza nowe konkurencyjne firmy", "Regulator jest w pełni niezależny"], answer: 0 },
-{ question: "Które z poniższych działań jest przykładem strategii wejścia na rynek oligopolistyczny?", options: ["Konkurencja cenowa prowadząca do wojny cenowej", "Zmniejszenie kosztów produkcji przez efekt skali", "Przejęcie mniejszej firmy w branży", "Wszystkie powyższe"], answer: 3 },
-{ question: "Efekt sieciowy oznacza, że:", options: ["Im więcej użytkowników korzysta z produktu, tym jego wartość rośnie", "Produkt wymaga dużej infrastruktury", "Cena produktu spada wraz z większą liczbą użytkowników", "Rynek jest bardziej konkurencyjny"], answer: 0 },
-{ question: "Który z poniższych rynków najlepiej pasuje do definicji monopolu naturalnego?", options: ["Produkcja samochodów", "Dostawy wody i energii", "Przemysł spożywczy", "Transport lotniczy"], answer: 1 },
-{ question: "Który z czynników nie sprzyja konkurencji na rynku?", options: ["Niskie bariery wejścia", "Wysokie koszty utracone (sunk costs)", "Duża liczba firm", "Przejrzystość informacji o cenach"], answer: 1 },
-{ question: "Która polityka antymonopolowa może być stosowana wobec firm dominujących na rynku?", options: ["Podział firmy na mniejsze podmioty", "Nakaz obniżenia cen", "Wprowadzenie regulacji dostępu do infrastruktury", "Wszystkie powyższe"], answer: 3 },
-{ question: "Które z poniższych strategii cenowych jest najczęściej stosowane w monopolu?", options: ["Dumping cenowy", "Maksymalizacja zysku poprzez ustalanie ceny powyżej kosztu krańcowego", "Wojna cenowa", "Swobodne ustalanie cen przez konkurencję"], answer: 1 },
-{ question: "Co oznacza termin „bariera wejścia\" na rynek?", options: ["Mechanizm ochrony konsumentów przed nieuczciwymi praktykami", "Czynniki utrudniające nowym firmom wejście na rynek", "Regulacje dotyczące importu towarów", "Zmniejszenie marż firm działających na rynku"], answer: 1 },
-{ question: "Która z poniższych strategii jest najbardziej charakterystyczna dla oligopolu?", options: ["Brak konkurencji", "Wzajemne dostosowywanie strategii cenowych", "Pełna swoboda cenowa", "Niskie bariery wejścia"], answer: 1 },
-{ question: "Regulator rynku może interweniować w celu:", options: ["Zapewnienia równego dostępu do infrastruktury", "Utrzymania wysokich cen dla konsumentów", "Ochrony interesów tylko największych firm", "Ograniczenia konkurencji"], answer: 0 },
-{ question: "Który z poniższych czynników sprzyja konkurencji?", options: ["Wysokie bariery wejścia", "Przejrzystość informacji o cenach", "Monopolizacja rynku", "Ograniczona liczba konkurentów"], answer: 1 },
-{ question: "Który z poniższych czynników jest kluczowy dla skutecznego funkcjonowania monopolu naturalnego?", options: ["Wysokie koszty stałe", "Duża liczba konkurentów", "Niski poziom regulacji rządowych", "Brak potrzeby inwestycji w infrastrukturę"], answer: 0 },
-{ question: "Co oznacza pojęcie „duopol\"?", options: ["Rynek kontrolowany przez jedną firmę", "Rynek kontrolowany przez dwie dominujące firmy", "Rynek o nieograniczonej liczbie podmiotów", "Rynek o wysokim poziomie regulacji"], answer: 1 },
-{ question: "Jakie jest podstawowe założenie modelu Cournota dla oligopolu?", options: ["Firmy konkurują poprzez ustalanie cen", "Firmy konkurują poprzez ustalanie ilości produkcji", "Firmy ignorują działania konkurencji", "Firmy nie mają wpływu na rynek"], answer: 1 },
-{ question: "Która z poniższych strategii jest stosowana przez firmy w celu odstraszania nowych konkurentów?", options: ["Utrzymywanie wysokich cen", "Dumping cenowy", "Ograniczanie produkcji", "Współpraca z nowymi firmami"], answer: 1 },
-{ question: "Jakie konsekwencje niesie ze sobą efekt skali w branżach sieciowych?", options: ["Zwiększone koszty jednostkowe wraz ze wzrostem produkcji", "Obniżenie kosztów jednostkowych przy większej produkcji", "Brak korzyści dla dużych producentów", "Konieczność ograniczenia produkcji"], answer: 1 },
-{ question: "Który z poniższych paradygmatów opisuje związek między strukturą rynku, działaniem firm i wynikami?", options: ["SWOT", "PEST", "HHI", "SDW"], answer: 3 },
-{ question: "Co mierzy wskaźnik Herfindahla-Hirschmana (HHI)?", options: ["Elastyczność cenową popytu", "Koncentrację rynku", "Udział firmy w rynku", "Tempo wzrostu rynku"], answer: 1 },
-{ question: "Który z poniższych czynników nie sprzyja zmowie na rynku?", options: ["Wysokie bariery wejścia", "Duża liczba firm", "Homogeniczność produktów", "Stabilny popyt"], answer: 1 },
-{ question: "Która z poniższych branż jest przykładem branży sieciowej?", options: ["Produkcja odzieży", "Telekomunikacja", "Restauracje", "Sklepy spożywcze"], answer: 1 },
-{ question: "Co to jest monopol naturalny?", options: ["Sytuacja, w której jedna firma kontroluje całą podaż", "Sytuacja, w której kilka firm kontroluje większość podaży", "Sytuacja, w której jedna firma może produkować taniej niż kilka firm", "Sytuacja, w której firmy konkurują ze sobą"], answer: 2 },
-{ question: "Który z poniższych czynników nie jest przyczyną regulacji branż sieciowych?", options: ["Niesprawności rynku", "Niesprawności państwa", "Konkurencja doskonała", "Usługa powszechna"], answer: 2 },
-{ question: "Co to jest 'capture' w kontekście regulacji?", options: ["Sytuacja, w której regulator jest niezależny od regulowanych firm", "Sytuacja, w której regulator działa na korzyść regulowanych firm", "Sytuacja, w której regulator dba o interes publiczny", "Sytuacja, w której regulacja jest nieefektywna"], answer: 1 },
-{ question: "Co to jest zmowa (porozumienie horyzontalne)?", options: ["Porozumienie między firmami o podziale rynku", "Fuzja dwóch firm", "Działanie firmy w celu zwiększenia efektywności", "Innowacja technologiczna"], answer: 0 },
-{ question: "Który z poniższych czynników nie jest elementem struktury rynku?", options: ["Liczba firm", "Polityka cenowa", "Bariery wejścia", "Zróżnicowanie produktu"], answer: 1 },
-{ question: "Co to jest 'leniency' w kontekście prawa antymonopolowego?", options: ["Program łagodzenia kar dla firm, które zgłoszą istnienie zmowy", "Kara nałożona na firmę za naruszenie prawa antymonopolowego", "Kontrola koncentracji rynku", "Zakaz fuzji"], answer: 0 },
-{ question: "Który z poniższych modeli rynku charakteryzuje się dużą liczbą firm i jednorodnym produktem?", options: ["Monopol", "Oligopol", "Konkurencja doskonała", "Konkurencja monopolistyczna"], answer: 2 },
-{ question: "Co to jest 'efekt sieciowy'?", options: ["Sytuacja, w której wartość produktu rośnie wraz z liczbą jego użytkowników", "Sytuacja, w której firma osiąga korzyści skali", "Sytuacja, w której firma ma monopol naturalny", "Sytuacja, w której państwo reguluje rynek"], answer: 0 },
-{ question: "Który z poniższych czynników nie jest cechą charakterystyczną branż sieciowych?", options: ["Silne korzyści skali i zakresu", "Wysoka kapitałochłonność", "Krótki okres zwrotu", "Powszechność konsumpcji"], answer: 2 },
-{ question: "Co to jest 'koszt utracony' (sunk cost)?", options: ["Koszt, który został już poniesiony i nie można go odzyskać", "Koszt produkcji", "Koszt marketingu", "Koszt transportu"], answer: 0 },
-{ question: "Który z poniższych czynników nie jest celem regulacji rynku?", options: ["Ochrona konsumentów", "Zapewnienie konkurencji", "Maksymalizacja zysków firm", "Zapobieganie monopolizacji"], answer: 2 },
-{ question: "Co to jest 'asymetria informacji' w kontekście regulacji?", options: ["Sytuacja, w której regulator ma więcej informacji niż regulowana firma", "Sytuacja, w której regulowana firma ma więcej informacji niż regulator", "Sytuacja, w której obie strony mają tyle samo informacji", "Brak informacji"], answer: 1 },
-{ question: "Który z poniższych czynników nie jest problemem związanym z regulacją rynku?", options: ["Asymetria informacji", "Ryzyko 'przechwycenia' regulatora", "Wysokie koszty regulacji", "Pełna wiedza regulatora"], answer: 3 },
-{ question: "Co to jest 'rynek właściwy' w kontekście prawa antymonopolowego?", options: ["Rynek, na którym działa firma", "Rynek, na którym konsumenci mogą znaleźć bliskie substytuty produktu", "Rynek, na którym firma ma monopol", "Rynek, na którym działa kilka firm"], answer: 1 },
-{ question: "Który z poniższych czynników nie jest cechą charakterystyczną monopolu naturalnego?", options: ["Silne korzyści skali", "Wysokie koszty stałe", "Duża liczba firm", "Bariery wejścia"], answer: 2 },
-{ question: "Co to jest 'integracja pionowa'?", options: ["Połączenie firm z różnych etapów łańcucha produkcji", "Połączenie firm z tego samego etapu łańcucha produkcji", "Fuzja dwóch firm", "Podział firmy"], answer: 0 },
-{ question: "Na rynku działają trzy firmy: A, B i C. Firma A ma 50% udziału w rynku, firma B ma 30% udziału w rynku, a firma C ma 20% udziału w rynku. Oblicz wskaźnik Herfindahla-Hirschmana (HHI).", options: ["3000", "3400", "3800", "4200"], answer: 2 },
-{ question: "Na rynku działają cztery firmy, każda z 25% udziałem w rynku. Oblicz HHI.", options: ["2000", "2500", "3000", "3500"], answer: 1 },
-{ question: "Rynek składa się z pięciu firm. Udziały w rynku wynoszą odpowiednio: 40%, 20%, 15%, 15% i 10%. Oblicz HHI.", options: ["1850", "2050", "2250", "2550"], answer: 3 },
-{ question: "Firma A ma 60% udziału w rynku, a dwie pozostałe firmy mają po 20% udziału. Jakie jest HHI?", options: ["4400", "4800", "5200", "5600"], answer: 0 },
-{ question: "Na rynku jest sześć firm, z czego trzy mają po 20% udziału, a trzy pozostałe po 13,33%. Oblicz HHI.", options: ["1733,34", "2400", "2600", "2800"], answer: 0 },
+    <script>
+        const explanations = [
+    "Paradygmat SDW koncentruje się na liczbie firm, barierach wejścia i zróżnicowaniu produktów, ale nie uwzględnia poziomu inwestycji w badania i rozwój jako podstawowego elementu struktury rynku.",
+    "HHI mierzy koncentrację rynku, sumując kwadraty udziałów rynkowych firm, co pozwala ocenić stopień konkurencji lub monopolizacji.",
+    // Dodano kolejne wyjaśnienia od pytania 3 do 65
+    "Wartość HHI = 10 000 oznacza, że jedna firma ma 100% udziału w rynku, co jest charakterystyczne dla monopolu.",
+    "W konkurencji doskonałej istnieje wiele firm, co powoduje, że ceny są ustalane na poziomie kosztu krańcowego, ograniczając marże zysku.",
+    "Konkurencja monopolistyczna pozwala na różnicowanie produktów, podczas gdy w konkurencji doskonałej wszystkie produkty są identyczne.",
+    "Zmowa milcząca polega na przewidywaniu działań konkurentów bez formalnych ustaleń, co odróżnia ją od zmowy jawnej.",
+    "Im więcej firm na rynku, tym trudniej jest utrzymać zmowę, ponieważ kontrolowanie cen staje się trudniejsze.",
+    "Jeśli ceny różnych firm są niemal identyczne i stabilne, może to sugerować zmowę cenową.",
+    "Branża telekomunikacyjna ma wysokie bariery wejścia i niewielką liczbę graczy, co sprzyja zmowom cenowym.",
+    "Program leniency zachęca firmy do ujawniania karteli, oferując im niższe kary.",
+    "Branże sieciowe, takie jak telekomunikacja, charakteryzują się dużymi kosztami stałymi, ale niskimi kosztami krańcowymi, co sprzyja korzyściom skali.",
+    "Regulatorzy rynkowi interweniują w celu ochrony konkurencji i zapobiegania nadużyciom monopolistycznym.",
+    "Naturalny monopol występuje, gdy pojedyncza firma jest najbardziej efektywna ze względu na wysokie koszty stałe, a nie gdy istnieje wiele małych firm.",
+    "Wysokie koszty inwestycji (np. infrastruktury) utrudniają konkurencję w sektorze energetycznym.",
+    "\"Regulatory capture\" oznacza, że regulator staje się zależny od firm, zamiast działać w interesie publicznym.",
+    "Firmy wchodzące na rynek oligopolistyczny mogą stosować różne strategie, takie jak obniżanie kosztów, przejęcia i konkurencja cenowa.",
+    "Efekt sieciowy występuje np. w mediach społecznościowych, gdzie większa liczba użytkowników zwiększa atrakcyjność produktu.",
+    "Naturalne monopole pojawiają się w branżach, gdzie wysokie koszty stałe sprawiają, że jedna firma jest najbardziej efektywna.",
+    "Wysokie koszty, które nie mogą zostać odzyskane, utrudniają wejście nowych firm na rynek i zmniejszają konkurencję.",
+    "Polityka antymonopolowa może obejmować różne interwencje, od podziału firm po regulację dostępu do infrastruktury.",
+    "Monopolista ustala ceny wyższe niż koszt krańcowy, aby zmaksymalizować zyski.",
+    "Bariery wejścia mogą obejmować wysokie koszty inwestycji, patenty lub regulacje prawne.",
+    "Oligopole często stosują strategie, które polegają na reagowaniu na działania konkurentów.",
+    "Regulatorzy mogą wymuszać dostęp do infrastruktury, aby zapobiec monopolistycznym praktykom.",
+    "Dostęp do informacji o cenach zwiększa konkurencję, ponieważ konsumenci mogą porównywać oferty.",
+    "Monopole naturalne mają wysokie koszty początkowe, co utrudnia konkurencję.",
+    "Duopol to rynek z dwoma dominującymi firmami, np. Airbus i Boeing w lotnictwie.",
+    "Model Cournota zakłada, że firmy konkurują, dostosowując wielkość produkcji, a nie ceny.",
+    "Dumping cenowy polega na tymczasowym obniżaniu cen, aby wyeliminować konkurencję.",
+    "Efekt skali oznacza, że koszty jednostkowe maleją wraz ze wzrostem produkcji.",
+    "Paradygmat SDW (Struktura-Działanie-Wynik) opisuje związek między strukturą rynku, strategią firm i ich wynikami.",
+    "Wskaźnik Herfindahla-Hirschmana (HHI) mierzy stopień koncentracji na rynku i pozwala ocenić, czy rynek jest konkurencyjny, oligopolistyczny czy monopolistyczny.",
+    "Im więcej firm na rynku, tym trudniej utrzymać zmowę, ponieważ monitorowanie działań konkurencji staje się bardziej skomplikowane.",
+    "Branże sieciowe, takie jak telekomunikacja, opierają się na dużej infrastrukturze, co sprawia, że rynek jest zdominowany przez kilka dużych graczy.",
+    "Monopol naturalny występuje w sytuacji, gdy jedna firma może dostarczać dobro lub usługę efektywniej niż kilka firm, np. dostawy wody czy energii.",
+    "Regulacje w branżach sieciowych są konieczne, ponieważ konkurencja doskonała nie występuje naturalnie w tych sektorach.",
+    "\"Regulatory capture\" oznacza, że regulator staje się zależny od firm, które powinien kontrolować, co prowadzi do ochrony ich interesów.",
+    "Zmowa horyzontalna to nielegalne porozumienie między konkurentami mające na celu kontrolowanie rynku, np. poprzez ustalanie cen lub podział klientów.",
+    "Struktura rynku obejmuje liczbę firm, bariery wejścia i zróżnicowanie produktu, ale polityka cenowa jest elementem strategii, a nie struktury rynku.",
+    "Program \"leniency\" zachęca do ujawniania karteli, oferując firmom mniejsze kary w zamian za współpracę z organami antymonopolowymi.",
+    "Konkurencja doskonała charakteryzuje się dużą liczbą firm i jednorodnym produktem, co eliminuje wpływ pojedynczych firm na ceny.",
+    "Efekt sieciowy występuje w przypadku produktów takich jak media społecznościowe – im więcej użytkowników, tym większa wartość usługi.",
+    "Branże sieciowe charakteryzują się dużymi kosztami początkowymi i długim okresem zwrotu z inwestycji.",
+    "Koszty utracone (sunk costs) to wydatki, których nie da się odzyskać, np. inwestycje w badania i rozwój.",
+    "Regulacja rynku ma na celu ochronę konsumentów i zapewnienie konkurencji, a nie maksymalizację zysków firm.",
+    "Asymetria informacji oznacza, że firmy posiadają lepszą wiedzę niż regulator, co może prowadzić do nieefektywnych regulacji.",
+    "Regulacja rynku jest trudna, ponieważ regulatorzy często mają ograniczone informacje, co prowadzi do asymetrii informacji.",
+    "Rynek właściwy to segment rynku, gdzie produkty są wystarczająco podobne, by konsumenci mogli je zastępować.",
+    "Monopol naturalny powstaje w warunkach wysokich barier wejścia i silnych korzyści skali, a nie przy dużej liczbie firm.",
+    "Integracja pionowa oznacza przejęcie kontroli nad różnymi etapami produkcji, np. producent samochodów kupujący firmę dostarczającą części.",
+    "Wskaźnik HHI oblicza się jako sumę kwadratów udziałów rynkowych firm. Dla firm A (50%), B (30%) i C (20%): HHI=50² + 30² + 20² = 2500 + 900 + 400 = 3800.",
+    "Przy czterech firmach o równych udziałach (25%): HHI=25² + 25² + 25² + 25² = 625 + 625 + 625 + 625 = 2500.",
+    "Wskaźnik HHI dla firm o udziałach 40%, 20%, 15%, 15% i 10%: HHI=40² + 20² + 15² + 15² + 10² = 1600 + 400 + 225 + 225 + 100 = 2550.",
+    "HHI dla firm z udziałami 60%, 20% i 20%: HHI=60² + 20² + 20² = 3600 + 400 + 400 = 4400.",
+    "Dla trzech firm po 20% i trzech po 13,33%: HHI=3×20² + 3×13.33² = 3×400 + 3×177.78 = 1200 + 533.34 = 1733.34.",
+    "Ekonomia ochrony konkurencji opiera się na analizie struktur rynkowych, strategii firm i wyników rynkowych, co jest badane w ramach Industrial Organization.",
+    "Branże sieciowe charakteryzują się wysokimi kosztami stałymi i niskimi kosztami krańcowymi, co prowadzi do silnych korzyści skali i zakresu.",
+    "Wskaźnik HHI obliczamy jako sumę kwadratów udziałów rynkowych: HHI=20² + 40² + 15² + 25² = 400 + 1600 + 225 + 625 = 2850.",
+    "Dobra publiczne charakteryzują się tym, że nie można nikogo wykluczyć z ich konsumpcji, a konsumenci nie rywalizują o ich użycie (np. latarnie uliczne).",
+    "W przypadku fuzji Komisja Europejska analizuje zmiany w HHI. Jeżeli wzrost (ΔHHI) jest niski, to nie wskazuje na istotne ryzyko monopolizacji.",
+    "\"Capture\" oznacza sytuację, w której regulator działa w interesie firm, które powinien kontrolować, zamiast dbać o dobro publiczne.",
+    "Różnicowanie produktu zmniejsza skłonność do zmowy, ponieważ firmy mogą konkurować jakością i innowacjami, a nie tylko ceną.",
+    "Błąd Cellophane Fallacy występuje, gdy monopolista ustala ceny na poziomie, który sprawia, że jego produkt wydaje się mieć substytuty, co może prowadzić do błędnych wniosków o konkurencji.",
+    "Im niższy wskaźnik HHI, tym bardziej konkurencyjny rynek. Wartość 0 oznacza doskonałą konkurencję, gdzie żadna firma nie ma dominującej pozycji.",
+    "Oligopol to rynek, na którym działa kilka dużych firm, które mają znaczący wpływ na ceny i konkurencję, ale nie są monopolistami."
+];
+       const allQuestions = [
+            { question: "Który z poniższych elementów nie jest częścią struktury rynku według paradygmatu SDW?", options: ["Liczba firm w branży", "Zróżnicowanie produktu", "Poziom inwestycji w badania i rozwój", "Bariery wejścia"], answer: 2 },
+            { question: "Który ze wskaźników najlepiej mierzy koncentrację rynku?", options: ["Indeks Herfindahla-Hirschmana (HHI)", "Wskaźnik wzrostu PKB", "Indeks cen konsumpcyjnych", "Współczynnik Giniego"], answer: 0 },
+            { question: "Jeżeli HHI wynosi 10 000, to oznacza, że rynek jest:", options: ["Oligopolistyczny", "Konkurencyjny", "Zdominowany przez monopol", "Regulowany"], answer: 2 },
+            { question: "Który z rynków będzie miał najniższą marżę zysku?", options: ["Pełny monopol", "Oligopol", "Konkurencja monopolistyczna", "Konkurencja doskonała"], answer: 3 },
+            { question: "Główną różnicą między konkurencją doskonałą a konkurencją monopolistyczną jest:", options: ["Ilość firm na rynku", "Możliwość różnicowania produktu", "Sposób ustalania cen", "Poziom barier wejścia"], answer: 1 },
+            { question: "Zmowa milcząca różni się od zmowy jawnej tym, że:", options: ["Jest legalna", "Nie wymaga bezpośredniej komunikacji między firmami", "Dotyczy wyłącznie rynków finansowych", "Wymaga interwencji regulatora"], answer: 1 },
+            { question: "Który z czynników nie sprzyja powstawaniu zmowy?", options: ["Wysokie bariery wejścia", "Duża liczba firm na rynku", "Możliwość monitorowania cen konkurentów", "Wysoka przejrzystość rynku"], answer: 1 },
+            { question: "Który ze wskaźników może sugerować istnienie zmowy cenowej?", options: ["Wzrost liczby nowych przedsiębiorstw na rynku", "Stabilne i niemal identyczne ceny u wszystkich dostawców", "Wzrost wydatków na reklamę", "Spadek marż zysku w branży"], answer: 1 },
+            { question: "Która z branż jest najbardziej podatna na zmowy cenowe?", options: ["Przemysł spożywczy", "Telekomunikacja", "Rynek odzieżowy", "Transport lotniczy"], answer: 1 },
+            { question: "Program łagodzenia kar (leniency) polega na:", options: ["Obniżeniu grzywny dla firm zgłaszających zmowę", "Automatycznym anulowaniu wszystkich kar", "Podwyższaniu kar dla liderów karteli", "Umożliwieniu firmom negocjowania cen w ramach porozumienia"], answer: 0 },
+            { question: "Branże sieciowe charakteryzują się:", options: ["Silnymi korzyściami skali i zakresu", "Umiarkowaną kapitałochłonnością", "Niskim udziałem kosztów utraconych (sunk costs)", "Krótkim okresem zwrotu inwestycji"], answer: 0 },
+            { question: "Główną rolą regulatora w sektorach sieciowych jest:", options: ["Ochrona interesów firm", "Eliminacja wszystkich podmiotów prywatnych", "Zapewnienie konkurencji i stabilności rynku", "Maksymalizacja zysków rządu"], answer: 2 },
+            { question: "Który z poniższych elementów nie jest cechą naturalnego monopolu?", options: ["Wysokie koszty stałe", "Korzyści skali", "Duża liczba małych firm na rynku", "Niska efektywność kosztowa konkurencji"], answer: 2 },
+            { question: "Jednym z powodów regulacji sektora energetycznego jest:", options: ["Zbyt wysoka konkurencja", "Wysokie koszty wejścia na rynek", "Brak efektów sieciowych", "Niska kapitałochłonność"], answer: 1 },
+            { question: "Zawłaszczenie regulatora (regulatory capture) oznacza, że:", options: ["Regulator działa w interesie sektora, który powinien nadzorować", "Rząd bezpośrednio kontroluje wszystkie firmy", "Regulator wprowadza nowe konkurencyjne firmy", "Regulator jest w pełni niezależny"], answer: 0 },
+            { question: "Które z poniższych działań jest przykładem strategii wejścia na rynek oligopolistyczny?", options: ["Konkurencja cenowa prowadząca do wojny cenowej", "Zmniejszenie kosztów produkcji przez efekt skali", "Przejęcie mniejszej firmy w branży", "Wszystkie powyższe"], answer: 3 },
+            { question: "Efekt sieciowy oznacza, że:", options: ["Im więcej użytkowników korzysta z produktu, tym jego wartość rośnie", "Produkt wymaga dużej infrastruktury", "Cena produktu spada wraz z większą liczbą użytkowników", "Rynek jest bardziej konkurencyjny"], answer: 0 },
+            { question: "Który z poniższych rynków najlepiej pasuje do definicji monopolu naturalnego?", options: ["Produkcja samochodów", "Dostawy wody i energii", "Przemysł spożywczy", "Transport lotniczy"], answer: 1 },
+            { question: "Który z czynników nie sprzyja konkurencji na rynku?", options: ["Niskie bariery wejścia", "Wysokie koszty utracone (sunk costs)", "Duża liczba firm", "Przejrzystość informacji o cenach"], answer: 1 },
+            { question: "Która polityka antymonopolowa może być stosowana wobec firm dominujących na rynku?", options: ["Podział firmy na mniejsze podmioty", "Nakaz obniżenia cen", "Wprowadzenie regulacji dostępu do infrastruktury", "Wszystkie powyższe"], answer: 3 },
+            { question: "Które z poniższych strategii cenowych jest najczęściej stosowane w monopolu?", options: ["Dumping cenowy", "Maksymalizacja zysku poprzez ustalanie ceny powyżej kosztu krańcowego", "Wojna cenowa", "Swobodne ustalanie cen przez konkurencję"], answer: 1 },
+            { question: "Co oznacza termin „bariera wejścia\" na rynek?", options: ["Mechanizm ochrony konsumentów przed nieuczciwymi praktykami", "Czynniki utrudniające nowym firmom wejście na rynek", "Regulacje dotyczące importu towarów", "Zmniejszenie marż firm działających na rynku"], answer: 1 },
+            { question: "Która z poniższych strategii jest najbardziej charakterystyczna dla oligopolu?", options: ["Brak konkurencji", "Wzajemne dostosowywanie strategii cenowych", "Pełna swoboda cenowa", "Niskie bariery wejścia"], answer: 1 },
+            { question: "Regulator rynku może interweniować w celu:", options: ["Zapewnienia równego dostępu do infrastruktury", "Utrzymania wysokich cen dla konsumentów", "Ochrony interesów tylko największych firm", "Ograniczenia konkurencji"], answer: 0 },
+            { question: "Który z poniższych czynników sprzyja konkurencji?", options: ["Wysokie bariery wejścia", "Przejrzystość informacji o cenach", "Monopolizacja rynku", "Ograniczona liczba konkurentów"], answer: 1 },
+            { question: "Który z poniższych czynników jest kluczowy dla skutecznego funkcjonowania monopolu naturalnego?", options: ["Wysokie koszty stałe", "Duża liczba konkurentów", "Niski poziom regulacji rządowych", "Brak potrzeby inwestycji w infrastrukturę"], answer: 0 },
+            { question: "Co oznacza pojęcie „duopol\"?", options: ["Rynek kontrolowany przez jedną firmę", "Rynek kontrolowany przez dwie dominujące firmy", "Rynek o nieograniczonej liczbie podmiotów", "Rynek o wysokim poziomie regulacji"], answer: 1 },
+            { question: "Jakie jest podstawowe założenie modelu Cournota dla oligopolu?", options: ["Firmy konkurują poprzez ustalanie cen", "Firmy konkurują poprzez ustalanie ilości produkcji", "Firmy ignorują działania konkurencji", "Firmy nie mają wpływu na rynek"], answer: 1 },
+            { question: "Która z poniższych strategii jest stosowana przez firmy w celu odstraszania nowych konkurentów?", options: ["Utrzymywanie wysokich cen", "Dumping cenowy", "Ograniczanie produkcji", "Współpraca z nowymi firmami"], answer: 1 },
+            { question: "Jakie konsekwencje niesie ze sobą efekt skali w branżach sieciowych?", options: ["Zwiększone koszty jednostkowe wraz ze wzrostem produkcji", "Obniżenie kosztów jednostkowych przy większej produkcji", "Brak korzyści dla dużych producentów", "Konieczność ograniczenia produkcji"], answer: 1 },
+            { question: "Który z poniższych paradygmatów opisuje związek między strukturą rynku, działaniem firm i wynikami?", options: ["SWOT", "PEST", "HHI", "SDW"], answer: 3 },
+            { question: "Co mierzy wskaźnik Herfindahla-Hirschmana (HHI)?", options: ["Elastyczność cenową popytu", "Koncentrację rynku", "Udział firmy w rynku", "Tempo wzrostu rynku"], answer: 1 },
+            { question: "Który z poniższych czynników nie sprzyja zmowie na rynku?", options: ["Wysokie bariery wejścia", "Duża liczba firm", "Homogeniczność produktów", "Stabilny popyt"], answer: 1 },
+            { question: "Która z poniższych branż jest przykładem branży sieciowej?", options: ["Produkcja odzieży", "Telekomunikacja", "Restauracje", "Sklepy spożywcze"], answer: 1 },
+            { question: "Co to jest monopol naturalny?", options: ["Sytuacja, w której jedna firma kontroluje całą podaż", "Sytuacja, w której kilka firm kontroluje większość podaży", "Sytuacja, w której jedna firma może produkować taniej niż kilka firm", "Sytuacja, w której firmy konkurują ze sobą"], answer: 2 },
+            { question: "Który z poniższych czynników nie jest przyczyną regulacji branż sieciowych?", options: ["Niesprawności rynku", "Niesprawności państwa", "Konkurencja doskonała", "Usługa powszechna"], answer: 2 },
+            { question: "Co to jest 'capture' w kontekście regulacji?", options: ["Sytuacja, w której regulator jest niezależny od regulowanych firm", "Sytuacja, w której regulator działa na korzyść regulowanych firm", "Sytuacja, w której regulator dba o interes publiczny", "Sytuacja, w której regulacja jest nieefektywna"], answer: 1 },
+            { question: "Co to jest zmowa (porozumienie horyzontalne)?", options: ["Porozumienie między firmami o podziale rynku", "Fuzja dwóch firm", "Działanie firmy w celu zwiększenia efektywności", "Innowacja technologiczna"], answer: 0 },
+            { question: "Który z poniższych czynników nie jest elementem struktury rynku?", options: ["Liczba firm", "Polityka cenowa", "Bariery wejścia", "Zróżnicowanie produktu"], answer: 1 },
+            { question: "Co to jest 'leniency' w kontekście prawa antymonopolowego?", options: ["Program łagodzenia kar dla firm, które zgłoszą istnienie zmowy", "Kara nałożona na firmę za naruszenie prawa antymonopolowego", "Kontrola koncentracji rynku", "Zakaz fuzji"], answer: 0 },
+            { question: "Który z poniższych modeli rynku charakteryzuje się dużą liczbą firm i jednorodnym produktem?", options: ["Monopol", "Oligopol", "Konkurencja doskonała", "Konkurencja monopolistyczna"], answer: 2 },
+            { question: "Co to jest 'efekt sieciowy'?", options: ["Sytuacja, w której wartość produktu rośnie wraz z liczbą jego użytkowników", "Sytuacja, w której firma osiąga korzyści skali", "Sytuacja, w której firma ma monopol naturalny", "Sytuacja, w której państwo reguluje rynek"], answer: 0 },
+            { question: "Który z poniższych czynników nie jest cechą charakterystyczną branż sieciowych?", options: ["Silne korzyści skali i zakresu", "Wysoka kapitałochłonność", "Krótki okres zwrotu", "Powszechność konsumpcji"], answer: 2 },
+            { question: "Co to jest 'koszt utracony' (sunk cost)?", options: ["Koszt, który został już poniesiony i nie można go odzyskać", "Koszt produkcji", "Koszt marketingu", "Koszt transportu"], answer: 0 },
+            { question: "Który z poniższych czynników nie jest celem regulacji rynku?", options: ["Ochrona konsumentów", "Zapewnienie konkurencji", "Maksymalizacja zysków firm", "Zapobieganie monopolizacji"], answer: 2 },
+            { question: "Co to jest 'asymetria informacji' w kontekście regulacji?", options: ["Sytuacja, w której regulator ma więcej informacji niż regulowana firma", "Sytuacja, w której regulowana firma ma więcej informacji niż regulator", "Sytuacja, w której obie strony mają tyle samo informacji", "Brak informacji"], answer: 1 },
+            { question: "Który z poniższych czynników nie jest problemem związanym z regulacją rynku?", options: ["Asymetria informacji", "Ryzyko 'przechwycenia' regulatora", "Wysokie koszty regulacji", "Pełna wiedza regulatora"], answer: 3 },
+            { question: "Co to jest 'rynek właściwy' w kontekście prawa antymonopolowego?", options: ["Rynek, na którym działa firma", "Rynek, na którym konsumenci mogą znaleźć bliskie substytuty produktu", "Rynek, na którym firma ma monopol", "Rynek, na którym działa kilka firm"], answer: 1 },
+            { question: "Który z poniższych czynników nie jest cechą charakterystyczną monopolu naturalnego?", options: ["Silne korzyści skali", "Wysokie koszty stałe", "Duża liczba firm", "Bariery wejścia"], answer: 2 },
+            { question: "Co to jest 'integracja pionowa'?", options: ["Połączenie firm z różnych etapów łańcucha produkcji", "Połączenie firm z tego samego etapu łańcucha produkcji", "Fuzja dwóch firm", "Podział firmy"], answer: 0 },
+            { question: "Na rynku działają trzy firmy: A, B i C. Firma A ma 50% udziału w rynku, firma B ma 30% udziału w rynku, a firma C ma 20% udziału w rynku. Oblicz wskaźnik Herfindahla-Hirschmana (HHI).", options: ["3000", "3400", "3800", "4200"], answer: 2 },
+            { question: "Na rynku działają cztery firmy, każda z 25% udziałem w rynku. Oblicz HHI.", options: ["2000", "2500", "3000", "3500"], answer: 1 },
+            { question: "Rynek składa się z pięciu firm. Udziały w rynku wynoszą odpowiednio: 40%, 20%, 15%, 15% i 10%. Oblicz HHI.", options: ["1850", "2050", "2250", "2550"], answer: 3 },
+            { question: "Firma A ma 60% udziału w rynku, a dwie pozostałe firmy mają po 20% udziału. Jakie jest HHI?", options: ["4400", "4800", "5200", "5600"], answer: 0 },
+            { question: "Na rynku jest sześć firm, z czego trzy mają po 20% udziału, a trzy pozostałe po 13,33%. Oblicz HHI.", options: ["1733,34", "2400", "2600", "2800"], answer: 0 },
             { question: "Która z poniższych dyscyplin ekonomicznych stanowi teoretyczną podstawę ekonomii ochrony konkurencji?", options: ["Industrial Organization", "Public Economics", "Competition Policy", "Ekonomia instytucjonalna", "Public Choice", "Mikroekonomia"], answer: 0 },
             { question: "Która z poniższych cech charakteryzuje branże sieciowe?", options: ["Istotna część nabywanych usług ma charakter dóbr wyższego rzędu", "Umiarkowana kapitałochłonność i krótki okres zwrotu zainwestowanych kapitałów", "Populacja nabywców pokrywa się częściowo z populacją wyborców", "Silne korzyści skali i zakresu", "Stosunkowo niewielki udział stałych kosztów utraconych (sunk costs) w kosztach całkowitych"], answer: 3 },
             { question: "Na danym rynku właściwym działa kilka firm, których procentowe udziały w łącznej sprzedaży są następujące: A=20, B=40, C=15, D=25. Wskaźnik Herfindahla-Hirschmana (HHI) dla tego rynku jest równy:", options: ["2850", "997", "2137", "420", "112"], answer: 0 },
@@ -151,131 +219,145 @@ const allQuestions = [
             { question: "Cellophane Fallacy to:", options: ["Przypadek w którym test hipotetycznego monopolisty prowadzi do błędnych wniosków", "Przypadek kiedy organ antymonopolowy może wydać zgodę na koncentrację konglomeratową", "Koncepcja ilościowa służąca do wyznaczania rynku właściwego", "Koncepcja stosowana do analizy rynków wtórnych", "Inne określenie efektu dźwigni"], answer: 0 },
             { question: "Poniższe liczby są wartościami wskaźnika Herfindahla-Hirschmana HHI dla wybranych rynków. Który z poniższych rynków jest najbardziej konkurencyjny?", options: ["10000", "4000", "15000", "0", "-1", "2", "50"], answer: 3 }, // Najmniejsze HHI = 0 (konkurencja doskonała)
             { question: "Firma X jest jedną z kilku firm, dostarczających na rynek produkt x. Formą rynku najbliższą temu opisowi jest:", options: ["Pełny monopson", "Konkurencja monopolistyczna", "Pełny monopol", "Oligopson", "Konkurencja doskonała", "Oligopol"], answer: 5 },
-];
+        ];
 
 
-let questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
-let currentQuestion = 0;
-let score = 0;
-let incorrectAnswers = [];
-let timeLeft = 300; // 5 minut w sekundach
-let timerId = null;
+        let questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
+        let currentQuestion = 0;
+        let score = 0;
+        let incorrectAnswers = [];
+        let timeLeft = 600; // 5 minut w sekundach
+        let timerId = null;
 
-function startTimer() {
-clearInterval(timerId);
-timeLeft = 600;
-updateTimerDisplay();
-timerId = setInterval(() => {
-timeLeft--;
-if (timeLeft <= 0) {
-clearInterval(timerId);
-endQuizDueToTime();
-}
-updateTimerDisplay();
-}, 1000);
-}
+        function startTimer() {
+            clearInterval(timerId);
+            timeLeft = 600;
+            updateTimerDisplay();
+            timerId = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    endQuizDueToTime();
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
 
-function updateTimerDisplay() {
-const minutes = Math.floor(timeLeft / 60);
-const seconds = timeLeft % 60;
-document.getElementById("timer").textContent = `Czas: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById("timer").textContent = `Czas: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
 
-function endQuizDueToTime() {
-while (currentQuestion < questions.length) {
-incorrectAnswers.push({
-question: questions[currentQuestion].question,
-selected: "Brak odpowiedzi",
-correct: questions[currentQuestion].options[questions[currentQuestion].answer]
-});
-currentQuestion++;
-}
-document.getElementById("quiz").innerHTML = "Czas upłynął! Koniec quizu.";
-document.getElementById("score").innerText = `Twój wynik: ${score}/${questions.length}`;
-displayIncorrectAnswers();
-document.querySelectorAll('.options button').forEach(button => button.disabled = true);
-}
+        function endQuizDueToTime() {
+            while (currentQuestion < questions.length) {
+                incorrectAnswers.push({
+                    question: questions[currentQuestion].question,
+                    selected: "Brak odpowiedzi",
+                    correct: questions[currentQuestion].options[questions[currentQuestion].answer]
+                });
+                currentQuestion++;
+            }
+            document.getElementById("quiz").innerHTML = "Czas upłynął! Koniec quizu.";
+            document.getElementById("score").innerText = `Twój wynik: ${score}/${questions.length}`;
+            displayIncorrectAnswers();
+            document.querySelectorAll('.options button').forEach(button => button.disabled = true);
+        }
+        function initializeQuestions() {
+            questions = allQuestions
+                .map((q, index) => ({ ...q, originalIndex: index }))
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 20);
+               }
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                clearInterval(timerId);
+                document.getElementById("quiz").innerHTML = "Koniec quizu!";
+                document.getElementById("score").innerText = `Twój wynik: ${score}/${questions.length}`;
+                displayIncorrectAnswers();
+                return;
+            }
 
-function loadQuestion() {
-if (currentQuestion >= questions.length) {
-clearInterval(timerId);
-document.getElementById("quiz").innerHTML = "Koniec quizu!";
-document.getElementById("score").innerText = `Twój wynik: ${score}/${questions.length}`;
-displayIncorrectAnswers();
-return;
-}
+            document.getElementById("question-counter").innerText = `Pytanie ${currentQuestion + 1} z ${questions.length}`;
+            const quizDiv = document.getElementById("quiz");
+            quizDiv.innerHTML = "";
 
-document.getElementById("question-counter").innerText = `Pytanie ${currentQuestion + 1} z ${questions.length}`;
-const quizDiv = document.getElementById("quiz");
-quizDiv.innerHTML = "";
+            const q = questions[currentQuestion];
+            const questionElement = document.createElement("div");
+            questionElement.className = "question";
+            questionElement.innerText = q.question;
+            quizDiv.appendChild(questionElement);
 
-const q = questions[currentQuestion];
-const questionElement = document.createElement("div");
-questionElement.className = "question";
-questionElement.innerText = q.question;
-quizDiv.appendChild(questionElement);
+            const ul = document.createElement("ul");
+            ul.className = "options";
+            q.options.forEach((option, index) => {
+                const li = document.createElement("li");
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.onclick = () => checkAnswer(index);
+                li.appendChild(button);
+                ul.appendChild(li);
+            });
+            quizDiv.appendChild(ul);
+        }
 
-const ul = document.createElement("ul");
-ul.className = "options";
-q.options.forEach((option, index) => {
-const li = document.createElement("li");
-const button = document.createElement("button");
-button.innerText = option;
-button.onclick = () => checkAnswer(index);
-li.appendChild(button);
-ul.appendChild(li);
-});
-quizDiv.appendChild(ul);
-}
+     function checkAnswer(selected) {
+            const q = questions[currentQuestion];
+            if (selected === q.answer) {
+                score++;
+            } else {
+                incorrectAnswers.push({
+                    question: q.question,
+                    selected: q.options[selected],
+                    correct: q.options[q.answer],
+                    originalIndex: q.originalIndex
+                });
+            }
+            currentQuestion++;
+            loadQuestion();
+        }
 
-function checkAnswer(selected) {
-const correctIndex = questions[currentQuestion].answer;
-if (selected === correctIndex) {
-score++;
-} else {
-incorrectAnswers.push({
-question: questions[currentQuestion].question,
-selected: questions[currentQuestion].options[selected],
-correct: questions[currentQuestion].options[correctIndex]
-});
-}
-currentQuestion++;
-loadQuestion();
-}
+ function displayIncorrectAnswers() {
+            if (incorrectAnswers.length > 0) {
+                document.getElementById("incorrect-answers").classList.remove("hidden");
+                const incorrectList = document.getElementById("incorrect-list");
+                incorrectList.innerHTML = "";
 
-function displayIncorrectAnswers() {
-if (incorrectAnswers.length > 0) {
-document.getElementById("incorrect-answers").classList.remove("hidden");
-const incorrectList = document.getElementById("incorrect-list");
-incorrectList.innerHTML = "";
-incorrectAnswers.forEach(item => {
-const li = document.createElement("li");
-li.innerHTML = `<strong>${item.question}</strong><br>Twoja odpowiedź: <span class="wrong-answer">${item.selected}</span><br>Poprawna odpowiedź: <span class="correct-answer">${item.correct}</span>`;
-incorrectList.appendChild(li);
-});
-}
-}
+                incorrectAnswers.forEach((item, index) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <strong>Pytanie ${index + 1}:</strong><br>
+                        ${item.question}<br>
+                        Twoja odpowiedź: <span class="wrong-answer">${item.selected}</span><br>
+                        Poprawna odpowiedź: <span class="correct-answer">${item.correct}</span><br>
+                        <span class="explanation">${explanations[item.originalIndex]}</span>
+                    `;
+                    incorrectList.appendChild(li);
+                });
+            }
+        }
 
-function nextQuestion() {
-loadQuestion();
-}
+        function nextQuestion() {
+            loadQuestion();
+        }
 
-function restartQuiz() {
-currentQuestion = 0;
-score = 0;
-incorrectAnswers = [];
-document.getElementById("score").innerText = "";
-document.getElementById("incorrect-answers").classList.add("hidden");
-questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
-document.querySelectorAll('.options button').forEach(button => button.disabled = false);
-startTimer();
-loadQuestion();
-}
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            incorrectAnswers = [];
+            initializeQuestions();
+            document.getElementById("incorrect-answers").classList.add("hidden");
+            questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
+            document.querySelectorAll('.options button').forEach(button => button.disabled = false);
+            startTimer();
+            loadQuestion();
+        }
 
-window.onload = function() {
-loadQuestion();
-startTimer();
-};
-</script>
+       window.onload = function() {
+            initializeQuestions();
+            startTimer();
+            loadQuestion();
+        };
+    </script>
 </body>
 </html>
