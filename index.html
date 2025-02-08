@@ -88,7 +88,6 @@
         const explanations = [
     "Paradygmat SDW koncentruje się na liczbie firm, barierach wejścia i zróżnicowaniu produktów, ale nie uwzględnia poziomu inwestycji w badania i rozwój jako podstawowego elementu struktury rynku.",
     "HHI mierzy koncentrację rynku, sumując kwadraty udziałów rynkowych firm, co pozwala ocenić stopień konkurencji lub monopolizacji.",
-    // Dodano kolejne wyjaśnienia od pytania 3 do 65
     "Wartość HHI = 10 000 oznacza, że jedna firma ma 100% udziału w rynku, co jest charakterystyczne dla monopolu.",
     "W konkurencji doskonałej istnieje wiele firm, co powoduje, że ceny są ustalane na poziomie kosztu krańcowego, ograniczając marże zysku.",
     "Konkurencja monopolistyczna pozwala na różnicowanie produktów, podczas gdy w konkurencji doskonałej wszystkie produkty są identyczne.",
@@ -341,17 +340,17 @@
             loadQuestion();
         }
 
-        function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
-            incorrectAnswers = [];
-            initializeQuestions();
-            document.getElementById("incorrect-answers").classList.add("hidden");
-            questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
-            document.querySelectorAll('.options button').forEach(button => button.disabled = false);
-            startTimer();
-            loadQuestion();
-        }
+     function restartQuiz() {
+    currentQuestion = 0;
+    score = 0;
+    incorrectAnswers = [];
+    initializeQuestions(); // Inicjalizacja przez właściwą funkcję
+    document.getElementById("score").innerText = "";
+    document.getElementById("incorrect-answers").classList.add("hidden");
+    document.querySelectorAll('.options button').forEach(button => button.disabled = false);
+    startTimer();
+    loadQuestion();
+}
 
        window.onload = function() {
             initializeQuestions();
