@@ -63,41 +63,65 @@
             display: none;
         }
         #timer {
-            font-size: 2em;
-            margin: 20px 0;
-            color: #42f57b;
+    font-size: 2.5em;
+    margin: 25px 0;
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 0, 0.8);
+    border: 4px solid #ffcc00;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+        #timer.low-time {
+            border-color: #ff4b2b;
+            background: rgba(255, 75, 43, 0.1);
+        }
+
+        #timer.medium-time {
+            border-color: #ff9f43;
+            background: rgba(255, 159, 67, 0.1);
+        }
+
+        #summary {
+            font-size: 1.8em;
+            margin: 25px 0;
+            padding: 20px;
+            border-radius: 15px;
             font-weight: bold;
         }
-        #timer.low-time {
-            color: #ff4b2b;
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            50% {
-                opacity: 0.5;
-            }
-        }
-        #summary {
-            font-size: 1.5em;
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 10px;
-        }
+
         #summary.low-score {
-            background: rgba(255, 69, 58, 0.2);
-            color: #ff4b2b;
+            background: linear-gradient(145deg, #ff4b2b, #ff416c);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
+
         #summary.medium-score {
-            background: rgba(255, 159, 67, 0.2);
-            color: #ff9f43;
+            background: linear-gradient(145deg, #ff9f43, #ffd93d);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
+
         #summary.high-score {
-            background: rgba(72, 219, 251, 0.2);
-            color: #48dbfb;
+            background: linear-gradient(145deg, #48dbfb, #2e86de);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
+
         #summary.perfect-score {
-            background: rgba(85, 239, 196, 0.2);
-            color: #55efc4;
+            background: linear-gradient(145deg, #55efc4, #00b894);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            animation: rainbow 2s infinite;
+        }
+
+        @keyframes rainbow {
+            50% {
+                filter: hue-rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -121,6 +145,7 @@
         const explanations = [
     "Paradygmat SDW koncentruje się na liczbie firm, barierach wejścia i zróżnicowaniu produktów, ale nie uwzględnia poziomu inwestycji w badania i rozwój jako podstawowego elementu struktury rynku.",
     "HHI mierzy koncentrację rynku, sumując kwadraty udziałów rynkowych firm, co pozwala ocenić stopień konkurencji lub monopolizacji.",
+    // Dodano kolejne wyjaśnienia od pytania 3 do 65
     "Wartość HHI = 10 000 oznacza, że jedna firma ma 100% udziału w rynku, co jest charakterystyczne dla monopolu.",
     "W konkurencji doskonałej istnieje wiele firm, co powoduje, że ceny są ustalane na poziomie kosztu krańcowego, ograniczając marże zysku.",
     "Konkurencja monopolistyczna pozwala na różnicowanie produktów, podczas gdy w konkurencji doskonałej wszystkie produkty są identyczne.",
@@ -186,8 +211,7 @@
     "Oligopol to rynek, na którym działa kilka dużych firm, które mają znaczący wpływ na ceny i konkurencję, ale nie są monopolistami."
 ];
 
-
-               const allQuestions = [
+        const allQuestions = [
             { question: "Który z poniższych elementów nie jest częścią struktury rynku według paradygmatu SDW?", options: ["Liczba firm w branży", "Zróżnicowanie produktu", "Poziom inwestycji w badania i rozwój", "Bariery wejścia"], answer: 2 },
             { question: "Który ze wskaźników najlepiej mierzy koncentrację rynku?", options: ["Indeks Herfindahla-Hirschmana (HHI)", "Wskaźnik wzrostu PKB", "Indeks cen konsumpcyjnych", "Współczynnik Giniego"], answer: 0 },
             { question: "Jeżeli HHI wynosi 10 000, to oznacza, że rynek jest:", options: ["Oligopolistyczny", "Konkurencyjny", "Zdominowany przez monopol", "Regulowany"], answer: 2 },
@@ -255,7 +279,6 @@
             { question: "Firma X jest jedną z kilku firm, dostarczających na rynek produkt x. Formą rynku najbliższą temu opisowi jest:", options: ["Pełny monopson", "Konkurencja monopolistyczna", "Pełny monopol", "Oligopson", "Konkurencja doskonała", "Oligopol"], answer: 5 },
         ];
 
-
         let questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
         let currentQuestion = 0;
         let score = 0;
@@ -269,9 +292,16 @@
             updateTimerDisplay();
             timerId = setInterval(() => {
                 timeLeft--;
-                if (timeLeft <= 30) {
-                    document.getElementById("timer").classList.add("low-time");
+
+                const timerElement = document.getElementById("timer");
+                timerElement.classList.remove("medium-time", "low-time");
+
+                if (timeLeft <= 120 && timeLeft > 60) {
+                    timerElement.classList.add("medium-time");
+                } else if (timeLeft <= 60) {
+                    timerElement.classList.add("low-time");
                 }
+
                 if (timeLeft <= 0) {
                     clearInterval(timerId);
                     endQuizDueToTime();
@@ -295,9 +325,9 @@
                 });
                 currentQuestion++;
             }
-            displaySummary();
-            document.getElementById("quiz").innerHTML = "Czas upłynął! Koniec quizu.";
+            document.getElementById("quiz").innerHTML = "<h3>⏰ Czas upłynął!</h3>";
             document.getElementById("score").innerText = `Twój wynik: ${score}/${questions.length}`;
+            displaySummary();
             displayIncorrectAnswers();
         }
 
@@ -348,17 +378,17 @@
 
         function displaySummary() {
             const summary = document.getElementById("summary");
-            const percentage = (score / questions.length) * 100;
+            const totalQuestions = questions.length;
 
             summary.classList.remove("hidden", "low-score", "medium-score", "high-score", "perfect-score");
 
-            if (percentage === 100) {
+            if (score === totalQuestions) {
                 summary.textContent = "Gratulacje :O";
                 summary.classList.add("perfect-score");
-            } else if (percentage >= 51) {
+            } else if (score >= 11 && score <= 19) {
                 summary.textContent = "Już prawie :D";
                 summary.classList.add("high-score");
-            } else if (percentage === 50) {
+            } else if (score === 10) {
                 summary.textContent = "Udało się, ale jeszcze poćwicz :)";
                 summary.classList.add("medium-score");
             } else {
@@ -368,6 +398,7 @@
         }
 
         function restartQuiz() {
+            clearInterval(timerId);
             currentQuestion = 0;
             score = 0;
             incorrectAnswers = [];
