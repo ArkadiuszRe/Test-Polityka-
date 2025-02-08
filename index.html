@@ -63,9 +63,41 @@
             display: none;
         }
         #timer {
-            font-size: 1.2em;
-            margin: 10px 0;
-            color: #ff416c;
+            font-size: 2em;
+            margin: 20px 0;
+            color: #42f57b;
+            font-weight: bold;
+        }
+        #timer.low-time {
+            color: #ff4b2b;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0.5;
+            }
+        }
+        #summary {
+            font-size: 1.5em;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        #summary.low-score {
+            background: rgba(255, 69, 58, 0.2);
+            color: #ff4b2b;
+        }
+        #summary.medium-score {
+            background: rgba(255, 159, 67, 0.2);
+            color: #ff9f43;
+        }
+        #summary.high-score {
+            background: rgba(72, 219, 251, 0.2);
+            color: #48dbfb;
+        }
+        #summary.perfect-score {
+            background: rgba(85, 239, 196, 0.2);
+            color: #55efc4;
         }
     </style>
 </head>
@@ -82,6 +114,7 @@
             <h3>Błędne odpowiedzi:</h3>
             <ul id="incorrect-list"></ul>
         </div>
+        <p id="summary" class="hidden"></p>
     </div>
 
     <script>
@@ -152,7 +185,9 @@
     "Im niższy wskaźnik HHI, tym bardziej konkurencyjny rynek. Wartość 0 oznacza doskonałą konkurencję, gdzie żadna firma nie ma dominującej pozycji.",
     "Oligopol to rynek, na którym działa kilka dużych firm, które mają znaczący wpływ na ceny i konkurencję, ale nie są monopolistami."
 ];
-       const allQuestions = [
+
+
+               const allQuestions = [
             { question: "Który z poniższych elementów nie jest częścią struktury rynku według paradygmatu SDW?", options: ["Liczba firm w branży", "Zróżnicowanie produktu", "Poziom inwestycji w badania i rozwój", "Bariery wejścia"], answer: 2 },
             { question: "Który ze wskaźników najlepiej mierzy koncentrację rynku?", options: ["Indeks Herfindahla-Hirschmana (HHI)", "Wskaźnik wzrostu PKB", "Indeks cen konsumpcyjnych", "Współczynnik Giniego"], answer: 0 },
             { question: "Jeżeli HHI wynosi 10 000, to oznacza, że rynek jest:", options: ["Oligopolistyczny", "Konkurencyjny", "Zdominowany przez monopol", "Regulowany"], answer: 2 },
@@ -220,20 +255,23 @@
             { question: "Firma X jest jedną z kilku firm, dostarczających na rynek produkt x. Formą rynku najbliższą temu opisowi jest:", options: ["Pełny monopson", "Konkurencja monopolistyczna", "Pełny monopol", "Oligopson", "Konkurencja doskonała", "Oligopol"], answer: 5 },
         ];
 
-        
+
         let questions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
         let currentQuestion = 0;
         let score = 0;
         let incorrectAnswers = [];
-        let timeLeft = 600; // 5 minut w sekundach
+        let timeLeft = 300; // 5 minut w sekundach
         let timerId = null;
 
         function startTimer() {
             clearInterval(timerId);
-            timeLeft = 600;
+            timeLeft = 300;
             updateTimerDisplay();
             timerId = setInterval(() => {
                 timeLeft--;
+                if (timeLeft <= 30) {
+                    document.getElementById("timer").classList.add("low-time");
+                }
                 if (timeLeft <= 0) {
                     clearInterval(timerId);
                     endQuizDueToTime();
@@ -257,36 +295,29 @@
                 });
                 currentQuestion++;
             }
+            displaySummary();
             document.getElementById("quiz").innerHTML = "Czas upłynął! Koniec quizu.";
             document.getElementById("score").innerText = `Twój wynik: ${score}/${questions.length}`;
             displayIncorrectAnswers();
-            document.querySelectorAll('.options button').forEach(button => button.disabled = true);
         }
-        function initializeQuestions() {
-            questions = allQuestions
-                .map((q, index) => ({ ...q, originalIndex: index }))
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 20);
-               }
+
         function loadQuestion() {
             if (currentQuestion >= questions.length) {
                 clearInterval(timerId);
-                document.getElementById("quiz").innerHTML = "Koniec quizu!";
-                document.getElementById("score").innerText = `Twój wynik: ${score}/${questions.length}`;
-                displayIncorrectAnswers();
+                displaySummary();
                 return;
             }
-            
+
             document.getElementById("question-counter").innerText = `Pytanie ${currentQuestion + 1} z ${questions.length}`;
             const quizDiv = document.getElementById("quiz");
             quizDiv.innerHTML = "";
-            
+
             const q = questions[currentQuestion];
             const questionElement = document.createElement("div");
             questionElement.className = "question";
             questionElement.innerText = q.question;
             quizDiv.appendChild(questionElement);
-            
+
             const ul = document.createElement("ul");
             ul.className = "options";
             q.options.forEach((option, index) => {
@@ -300,7 +331,7 @@
             quizDiv.appendChild(ul);
         }
 
-     function checkAnswer(selected) {
+        function checkAnswer(selected) {
             const q = questions[currentQuestion];
             if (selected === q.answer) {
                 score++;
@@ -308,52 +339,45 @@
                 incorrectAnswers.push({
                     question: q.question,
                     selected: q.options[selected],
-                    correct: q.options[q.answer],
-                    originalIndex: q.originalIndex
+                    correct: q.options[q.answer]
                 });
             }
             currentQuestion++;
             loadQuestion();
         }
 
- function displayIncorrectAnswers() {
-            if (incorrectAnswers.length > 0) {
-                document.getElementById("incorrect-answers").classList.remove("hidden");
-                const incorrectList = document.getElementById("incorrect-list");
-                incorrectList.innerHTML = "";
-                
-                incorrectAnswers.forEach((item, index) => {
-                    const li = document.createElement("li");
-                    li.innerHTML = `
-                        <strong>Pytanie ${index + 1}:</strong><br>
-                        ${item.question}<br>
-                        Twoja odpowiedź: <span class="wrong-answer">${item.selected}</span><br>
-                        Poprawna odpowiedź: <span class="correct-answer">${item.correct}</span><br>
-                        <span class="explanation">${explanations[item.originalIndex]}</span>
-                    `;
-                    incorrectList.appendChild(li);
-                });
+        function displaySummary() {
+            const summary = document.getElementById("summary");
+            const percentage = (score / questions.length) * 100;
+
+            summary.classList.remove("hidden", "low-score", "medium-score", "high-score", "perfect-score");
+
+            if (percentage === 100) {
+                summary.textContent = "Gratulacje :O";
+                summary.classList.add("perfect-score");
+            } else if (percentage >= 51) {
+                summary.textContent = "Już prawie :D";
+                summary.classList.add("high-score");
+            } else if (percentage === 50) {
+                summary.textContent = "Udało się, ale jeszcze poćwicz :)";
+                summary.classList.add("medium-score");
+            } else {
+                summary.textContent = "Poćwicz jeszcze :(";
+                summary.classList.add("low-score");
             }
         }
 
-        function nextQuestion() {
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            incorrectAnswers = [];
+            document.getElementById("summary").classList.add("hidden");
+            document.getElementById("incorrect-answers").classList.add("hidden");
+            startTimer();
             loadQuestion();
         }
 
-     function restartQuiz() {
-    currentQuestion = 0;
-    score = 0;
-    incorrectAnswers = [];
-    initializeQuestions(); // Inicjalizacja przez właściwą funkcję
-    document.getElementById("score").innerText = "";
-    document.getElementById("incorrect-answers").classList.add("hidden");
-    document.querySelectorAll('.options button').forEach(button => button.disabled = false);
-    startTimer();
-    loadQuestion();
-}
-
-       window.onload = function() {
-            initializeQuestions();
+        window.onload = function() {
             startTimer();
             loadQuestion();
         };
